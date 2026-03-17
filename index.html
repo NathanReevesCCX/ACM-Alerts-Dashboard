@@ -1,188 +1,47 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cliniconex ACM Alerts Dashboard</title>
-    <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --ccx-navy: #02475A;
-            --ccx-lime: #ADC837;
-            --ccx-teal: #029FB5;
-            --ccx-text: #333333;
-            --ccx-light-grey: #f4f7f8;
-            --ccx-border: #e1e4e8;
-        }
-        body { background-color: white; margin: 0; padding: 20px; color: var(--ccx-text); font-family: 'Nunito Sans', sans-serif; }
-        .tab { background: transparent; border: 1px solid var(--ccx-border); border-radius: 6px; padding: 6px 14px; font-size: 13px; color: #666; cursor: pointer; transition: all 0.15s; margin-right: 5px; }
-        .tab.active { background: var(--ccx-navy); color: #fff; border-color: var(--ccx-navy); }
-        .panel { background: white; border: 1px solid var(--ccx-border); padding: 20px; border-radius: 8px; margin-top: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
-        .badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 500; }
-        .badge-green { background: #ADC83720; color: #5a7a00; }
-        .badge-teal { background: #029FB520; color: #02475A; }
-        .badge-purple { background: #522E7620; color: #522E76; }
-        .badge-grey { background: #f0f0f0; color: #666; }
-        table { width: 100%; border-collapse: collapse; }
-        tr { border-bottom: 1px solid var(--ccx-border); }
-        th { text-align: left; padding: 12px 8px; color: #666; font-weight: 400; font-size: 12px; }
-        td { padding: 12px 8px; font-size: 13px; }
-        .tpl-card { border: 1px solid var(--ccx-border); margin-bottom: 12px; border-left: 4px solid var(--ccx-lime); }
-        .tpl-header { padding: 12px; background: #fafafa; display: flex; justify-content: space-between; }
-        .tpl-preview { background: #f9f9f9; padding: 15px; margin: 10px; border-radius: 4px; font-size: 13px; line-height: 1.5; }
-        .var-tag { background: #ADC83720; color: #5a7a00; padding: 1px 4px; border-radius: 3px; font-family: monospace; }
-    </style>
-</head>
-<body>
-
-<div id="app" style="max-width: 1000px; margin: 0 auto;">
-    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; border-bottom: 3px solid #ADC837; padding-bottom: 15px;">
-      <div style="display: flex; align-items: center; gap: 12px;">
-        <div style="width: 40px; height: 40px; border-radius: 50%; background: #02475A; display: flex; align-items: center; justify-content: center;">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ADC837" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+<div id="alertTemplates" class="panel" style="display:none;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+        <div style="font-size: 15px; font-weight: 600;">Standard Template Library</div>
+        <div style="font-size: 11px; color: #666;">Standardizing 4 Locations</div>
+      </div>
+      
+      <div id="templateCards">
+        <div class="tpl-card" style="border-left-color: #029FB5;">
+          <div class="tpl-header">
+            <div>
+              <div style="font-weight: 600;">Multi-Channel Appointment Reminder</div>
+              <div style="font-size: 11px; color: #666;">Trigger: 48 Hours Before Appt</div>
+            </div>
+            <span class="badge badge-teal">SMS + Voice Failover</span>
+          </div>
+          <div class="tpl-preview">
+            Reminder: <span class="var-tag">{PATIENT_NAME}</span>, you have an appointment with <span class="var-tag">{PROVIDER}</span> at <span class="var-tag">{CLINIC_NAME}</span> on <span class="var-tag">{DATE}</span> at <span class="var-tag">{TIME}</span>. Reply 1 to Confirm, 2 to Reschedule.
+          </div>
         </div>
-        <div>
-          <div style="font-size: 20px; font-weight: 600; color: #02475A;">ACM Alerts</div>
-          <div style="font-size: 12px; color: #029FB5; font-weight: 500;">Automated Care Messaging</div>
+
+        <div class="tpl-card" style="border-left-color: #d9534f;">
+          <div class="tpl-header">
+            <div>
+              <div style="font-weight: 600;">Urgent: Clinic Closure / Weather</div>
+              <div style="font-size: 11px; color: #666;">Trigger: Manual Broadcast</div>
+            </div>
+            <span class="badge" style="background:#f2dede; color:#a94442;">Emergency</span>
+          </div>
+          <div class="tpl-preview">
+            URGENT: <span class="var-tag">{CLINIC_NAME}</span> is closed today due to <span class="var-tag">{REASON}</span>. Your appointment has been cancelled. Our team will contact you to reschedule.
+          </div>
+        </div>
+
+        <div class="tpl-card" style="border-left-color: #522E76;">
+          <div class="tpl-header">
+            <div>
+              <div style="font-weight: 600;">Procedure Prep Instructions</div>
+              <div style="font-size: 11px; color: #666;">Trigger: Based on Appt Type (Imaging)</div>
+            </div>
+            <span class="badge badge-purple">Email Only</span>
+          </div>
+          <div class="tpl-preview">
+            Hi <span class="var-tag">{PATIENT_NAME}</span>, for your upcoming diagnostic at <span class="var-tag">{TIME}</span>, please remember: 1. Do not eat 8 hours prior. 2. Bring your health card. Full instructions: <span class="var-tag">{PREP_URL}</span>
+          </div>
         </div>
       </div>
-      <div style="text-align: right;">
-        <div style="font-size: 16px; font-weight: 600; color: #333;">Continuum Clinic</div>
-        <div style="font-size: 12px; color: #666;">4 locations &middot; 12 providers</div>
-      </div>
     </div>
-
-    <div style="display: flex; gap: 8px; margin-bottom: 20px;">
-      <button class="tab active" onclick="switchTab(this, 'providers')">Providers</button>
-      <button class="tab" onclick="switchTab(this, 'apptTypes')">Appointment types</button>
-      <button class="tab" onclick="switchTab(this, 'alertTemplates')">Alert templates</button>
-      <button class="tab" onclick="switchTab(this, 'reporting')">Reporting</button>
-    </div>
-
-    <div id="providers" class="panel">
-      <div style="font-size: 15px; font-weight: 600; margin-bottom: 15px;">Active Providers</div>
-      <table>
-        <thead>
-          <tr>
-            <th>Provider</th>
-            <th>Specialty</th>
-            <th>Location</th>
-            <th style="text-align: center;">Alerts (MTD)</th>
-            <th style="text-align: center;">Confirm Rate</th>
-            <th style="text-align: center;">Status</th>
-          </tr>
-        </thead>
-        <tbody id="providerBody"></tbody>
-      </table>
-    </div>
-
-    <div id="apptTypes" class="panel" style="display:none;">
-      <div style="font-size: 15px; font-weight: 600; margin-bottom: 15px;">Appointment Rules</div>
-      <table>
-        <thead>
-          <tr>
-            <th>Type</th>
-            <th style="text-align: center;">Booking</th>
-            <th style="text-align: center;">Reminder</th>
-            <th style="text-align: center;">Day-of</th>
-            <th style="text-align: center;">Survey</th>
-            <th style="text-align: right;">Vol (MTD)</th>
-          </tr>
-        </thead>
-        <tbody id="apptBody"></tbody>
-      </table>
-    </div>
-
-    <div id="alertTemplates" class="panel" style="display:none;">
-      <div id="templateCards"></div>
-    </div>
-
-    <div id="reporting" class="panel" style="display:none;">
-      <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-bottom: 25px;">
-        <div style="background: #f4f7f8; padding: 15px; border-radius: 8px; text-align: center;">
-            <div style="font-size: 11px; color: #666;">Total Sent</div>
-            <div style="font-size: 22px; font-weight: 700; color: #02475A;">8,247</div>
-        </div>
-        <div style="background: #f4f7f8; padding: 15px; border-radius: 8px; text-align: center;">
-            <div style="font-size: 11px; color: #666;">Confirmed</div>
-            <div style="font-size: 22px; font-weight: 700; color: #ADC837;">80%</div>
-        </div>
-        <div style="background: #f4f7f8; padding: 15px; border-radius: 8px; text-align: center;">
-            <div style="font-size: 11px; color: #666;">Cancelled</div>
-            <div style="font-size: 22px; font-weight: 700; color: #029FB5;">9%</div>
-        </div>
-        <div style="background: #f4f7f8; padding: 15px; border-radius: 8px; text-align: center;">
-            <div style="font-size: 11px; color: #666;">No Response</div>
-            <div style="font-size: 22px; font-weight: 700; color: #999;">11%</div>
-        </div>
-      </div>
-      <div style="height: 300px; width: 100%;">
-          <canvas id="responseChart"></canvas>
-      </div>
-    </div>
-</div>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
-<script>
-const providers = [
-  { name: 'Dr. Sarah Chen', spec: 'Family Medicine', loc: 'Downtown', sent: 892, rate: 84, status: 'Active' },
-  { name: 'Dr. Marcus Rivera', spec: 'Internal Medicine', loc: 'Westside', sent: 761, rate: 79, status: 'Active' },
-  { name: 'Dr. Aisha Patel', spec: 'Pediatrics', loc: 'Downtown', sent: 1043, rate: 88, status: 'Active' },
-  { name: 'Dr. Lisa Tanaka', spec: 'OB-GYN', loc: 'Eastview', sent: 678, rate: 86, status: 'Active' }
-];
-
-const pb = document.getElementById('providerBody');
-providers.forEach(p => {
-  pb.innerHTML += `<tr>
-    <td style="font-weight: 600;">${p.name}</td>
-    <td>${p.spec}</td>
-    <td>${p.loc}</td>
-    <td style="text-align: center;">${p.sent}</td>
-    <td style="text-align: center; color: #ADC837; font-weight: 700;">${p.rate}%</td>
-    <td style="text-align: center;"><span class="badge badge-green">${p.status}</span></td>
-  </tr>`;
-});
-
-const appts = [
-  { type: 'Annual physical', book: true, rem: true, day: true, surv: true, vol: 1240 },
-  { type: 'Follow-up visit', book: true, rem: true, day: false, surv: false, vol: 2180 },
-  { type: 'New patient consult', book: true, rem: true, day: true, surv: true, vol: 890 }
-];
-const ab = document.getElementById('apptBody');
-appts.forEach(a => {
-  ab.innerHTML += `<tr>
-    <td style="font-weight: 600;">${a.type}</td>
-    <td style="text-align: center;">${a.book ? '✓' : '—'}</td>
-    <td style="text-align: center;">${a.rem ? '✓' : '—'}</td>
-    <td style="text-align: center;">${a.day ? '✓' : '—'}</td>
-    <td style="text-align: center;">${a.surv ? '✓' : '—'}</td>
-    <td style="text-align: right;">${a.vol.toLocaleString()}</td>
-  </tr>`;
-});
-
-function switchTab(btn, id) {
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  btn.classList.add('active');
-  document.querySelectorAll('.panel').forEach(p => p.style.display = 'none');
-  document.getElementById(id).style.display = 'block';
-  if (id === 'reporting') drawChart();
-}
-
-function drawChart() {
-  const ctx = document.getElementById('responseChart');
-  if (window.myChart) window.myChart.destroy();
-  window.myChart = new Chart(ctx, {
-    type: 'bar',
-    data: {
-      labels: ['Oct','Nov','Dec','Jan','Feb','Mar'],
-      datasets: [
-        { label: 'Confirmed', data: [76, 78, 74, 80, 82, 80], backgroundColor: '#ADC837' },
-        { label: 'Cancelled', data: [9, 10, 11, 9, 8, 9], backgroundColor: '#029FB5' }
-      ]
-    },
-    options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, max: 100 } } }
-  });
-}
-</script>
-</body>
-</html>
